@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Segurança & Hash - FinanceAI</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <style>
+        .password-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 600px; margin: 20px auto; }
+        .hash-box { background: #2c3e50; color: #2ecc71; padding: 15px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 0.85rem; word-break: break-all; margin-top: 10px; border-left: 5px solid #2ecc71; min-height: 50px; }
+        .section-title { font-weight: bold; color: var(--primary); display: block; margin: 25px 0 10px; border-bottom: 2px solid #eee; padding-bottom: 5px; }
+        
+        .input-manual-group { position: relative; display: flex; align-items: center; }
+        .input-manual-group input { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem; }
+        .input-manual-group i { position: absolute; right: 15px; cursor: pointer; color: #888; z-index: 10; }
+        
+        .range-container { margin: 15px 0; background: #f8f9fa; padding: 15px; border-radius: 8px; }
+        .range-container label { display: flex; justify-content: space-between; margin-bottom: 10px; font-weight: bold; color: var(--primary); }
+        input[type="range"] { width: 100%; cursor: pointer; }
+
+        .strength-meter { height: 6px; background: #eee; border-radius: 3px; margin: 10px 0; overflow: hidden; }
+        #strength-bar { height: 100%; width: 0%; transition: 0.4s; }
+        
+        @media (max-width: 480px) {
+            .password-card { margin: 10px; padding: 15px; }
+            .hash-box { font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <main class="content">
+            <header><h1>Criptografia & Gerador</h1></header>
+
+            <div class="password-card">
+                <span class="section-title"><i class="fas fa-cog"></i> Configurar e Gerar Aleatória</span>
+                
+                <div class="range-container">
+                    <label>Tamanho: <span id="len-val">16</span> caracteres</label>
+                    <input type="range" id="length-slider" min="6" max="50" value="16" oninput="updateLenDisplay()">
+                </div>
+
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #ddd;">
+                    <span id="password-display" style="font-weight: bold; font-family: monospace; color: var(--secondary);">********</span>
+                    <button class="btn-edit" onclick="copyText('password-display')"><i class="fas fa-copy" title="Copiar Senha"></i></button>
+                </div>
+                <button onclick="generateAuto()" class="btn-save" style="width: 100%; margin-top: 10px; background: var(--secondary);">GERAR AGORA</button>
+
+                <span class="section-title"><i class="fas fa-keyboard"></i> Conversão Manual (Sua Senha)</span>
+                <div class="input-manual-group">
+                    <input type="password" id="manual-input" placeholder="Digite sua senha ou cole aqui..." oninput="convertManual()">
+                    <i class="fas fa-eye" id="toggleManual" onclick="toggleView()"></i>
+                </div>
+                <div class="strength-meter"><div id="strength-bar"></div></div>
+
+                <span class="section-title" style="font-size: 0.9rem; color: #666;"><i class="fas fa-fingerprint"></i> HASH SHA-256 (Criptografado)</span>
+                <div class="hash-box" id="hash-display">Aguardando entrada...</div>
+                <button class="btn-edit" style="width: 100%; margin-top: 10px; border: 1px solid #ddd;" onclick="copyText('hash-display')">
+                    <i class="fas fa-clone"></i> COPIAR HASH PARA O LOGIN.HTML
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- 
+    <script src="auth.js"></script>
+    -->
+    <script>
+        // Sincroniza o número exibido com o slider
+        function updateLenDisplay() {
+            document.getElementById('len-val').innerText = document.getElementById('length-slider').value;
+        }
+
+        // Função para Gerar Automaticamente usando window.crypto
+        function generateAuto() {
+            const length = document.getElementById('length-slider').value;
+            const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
+            let retVal = "";
+            const array = new Uint32Array(length);
+            window.crypto.getRandomValues(array);
+            for (let i = 0; i < length; ++i) {
+                retVal += charset.charAt(array[i] % charset.length);
+            }
+            
+            document.getElementById("password-display").innerText = retVal;
+            document.getElementById("manual-input").value = retVal; // Preenche o campo manual para visualização
+            processHash(retVal);
+        }
+
+        // Função para Converter Manualmente (acionada por digitação)
+        function convertManual() {
+            const val = document.getElementById("manual-input").value;
+            document.getElementById("password-display").innerText = "Entrada Manual";
+            processHash(val);
+        }
+
+        // Gera o Hash e calcula a força
+        function processHash(val) {
+            const hashDisp = document.getElementById("hash-display");
+            if(!val) {
+                hashDisp.innerText = "Aguardando entrada...";
+                updateMeter("");
+                return;
+            }
+            const hash = CryptoJS.SHA256(val).toString();
+            hashDisp.innerText = hash;
+            updateMeter(val);
+        }
+
+        // Alterna entre ver e esconder senha
+        function toggleView() {
+            const input = document.getElementById("manual-input");
+            const icon = document.getElementById("toggleManual");
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.replace("fa-eye", "fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.replace("fa-eye-slash", "fa-eye");
+            }
+        }
+
+        // Medidor de Força visual
+        function updateMeter(pwd) {
+            const bar = document.getElementById('strength-bar');
+            let s = 0;
+            if(pwd.length >= 8) s += 25;
+            if(/[A-Z]/.test(pwd)) s += 25;
+            if(/[0-9]/.test(pwd)) s += 25;
+            if(/[^A-Za-z0-9]/.test(pwd)) s += 25;
+            bar.style.width = s + '%';
+            bar.style.background = s < 50 ? '#e74c3c' : s < 100 ? '#f1c40f' : '#2ecc71';
+        }
+
+        function copyText(id) {
+            const text = document.getElementById(id).innerText;
+            if(text.includes("Aguardando") || text.includes("****")) return;
+            navigator.clipboard.writeText(text);
+            alert("Copiado!");
+        }
+
+        // Inicializa com uma senha ao carregar
+        generateAuto();
+    </script>
+</body>
+</html>

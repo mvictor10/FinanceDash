@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>FinanceDash - Exportar Relatório</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <script src="auth.js"></script>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo"><h2>Finance<span>AI</span></h2></div>
+            <nav>
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="#" class="active"><i class="fas fa-file-pdf"></i> PDF</a></li>
+                    <li><a href="#" class="active"><i class="fas fa-chart-line"></i> Gráficos</a></li>
+                    <li>
+                        <a href="javascript:void(0)" onclick="logout()" class="logout-link"><i class="fas fa-sign-out-alt"></i> Sair</a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="content">
+            <header>
+                <h1>Exportar Relatório PDF</h1>
+                <button id="btn-gerar" class="btn-save" style="background: #e74c3c;">
+                    <i class="fas fa-download"></i> Baixar PDF Agora
+                </button>
+            </header>
+
+            <div class="card">
+                <h3>Pré-visualização dos Dados</h3>
+                <p>O relatório conterá todas as transações cadastradas até o momento.</p>
+                <div id="preview-info" style="margin-top: 20px;"></div>
+            </div>
+        </main>
+    </div>
+    <script src="relatorio.js"></script>
+</body>
+</html>

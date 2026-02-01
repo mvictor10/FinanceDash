@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinanceDash - Gestão de Gastos</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://unpkg.com/imask"></script>
+    <script src="auth.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>Finance<span>AI</span></h2>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#" class="active"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="javascript:void(0)" id="btn-cadastrar"><i class="fas fa-plus-circle"></i> Cadastrar Novo</a></li>
+                    <li><a href="grafico.html"><i class="fas fa-chart-line"></i> Gráfico</a></li>
+                    <li><a href="relatorio.html" id="btn-pdf"><i class="fas fa-file-pdf"></i> Gerar PDF</a></li>
+                    <li>
+                        <a href="javascript:void(0)" onclick="logout()" class="logout-link"><i class="fas fa-sign-out-alt"></i> Sair</a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="content">
+            <header>
+                <h1>Dashboard de Gastos</h1>
+                <div class="summary">
+                    <div class="card">Total: <span id="total-amount">R$ 0,00</span></div>
+                </div>
+            </header>
+
+            <section class="filters-section" style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+    <h3 style="margin-bottom: 10px; font-size: 0.9rem; color: #666;"><i class="fas fa-search"></i> Busca Espontânea</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
+        <input type="text" id="filter-name" placeholder="Buscar por nome..." oninput="render()" style="padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+        
+        <select id="filter-category" onchange="render()" style="padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+            <option value="all">Todas as Categorias</option>
+            <option value="Alimentação">Alimentação</option>
+            <option value="Transporte">Transporte</option>
+            <option value="Lazer">Lazer</option>
+            <option value="Saúde">Saúde</option>
+            <option value="Tecnologia">Tecnologia</option>
+            <option value="Bem-Estar">Bem-Estar</option>
+            <option value="Higiene">Higiene</option>
+        </select>
+
+        <select id="filter-month" onchange="render()" style="padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+            <option value="all">Todos os Meses</option>
+            <option value="01">Janeiro</option><option value="02">Fevereiro</option>
+            <option value="03">Março</option><option value="04">Abril</option>
+            <option value="05">Maio</option><option value="06">Junho</option>
+            <option value="07">Julho</option><option value="08">Agosto</option>
+            <option value="09">Setembro</option><option value="10">Outubro</option>
+            <option value="11">Novembro</option><option value="12">Dezembro</option>
+        </select>
+
+        <input type="number" id="filter-year" placeholder="Ano (Ex: 2026)" oninput="render()" style="padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+        
+        <button type="button" onclick="window.clearFilters()" style="background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; padding: 8px;">Limpar</button>
+    </div>
+</section>
+
+            <section class="table-container">
+                <table id="finance-table">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Categoria</th>
+                            <th>Valor</th>
+                            <th>Data</th>
+                            <th>Editar</th>
+                            <th>Deletar</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body"></tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <div id="modal-form" class="modal">
+        <div class="modal-content">
+            <h3 id="modal-title">Novo Gasto</h3>
+            <form id="transaction-form">
+                <input type="hidden" id="edit-id">
+                <input type="text" id="name" placeholder="Nome do gasto" required>
+                <select id="category" required>
+                    <option value="">Selecione a Categoria</option>
+                    <option value="Alimentação">Alimentação</option>
+                    <option value="Transporte">Transporte</option>
+                    <option value="Lazer">Lazer</option>
+                    <option value="Saúde">Saúde</option>
+                    <option value="Bem-Estar">Bem-Estar</option>
+                    <option value="Aleatorio">Aleatorio</option>
+                    <option value="Tecnologia">Tecnologia</option>
+                    <option value="Higiene">Higiene</option>
+                    <option value="transferencia">Transferência</option>
+                    <option value="recibemento">Recebimento</option>
+                </select>
+                <input type="text" id="value" placeholder="R$ 0,00" required>
+                <input type="date" id="date" required>
+                <div class="modal-actions" style="margin-top: 20px; display: flex; justify-content: flex-end;">
+                    <button type="submit" class="btn-save">Salvar</button>
+                    <button type="button" class="btn-close" id="close-modal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

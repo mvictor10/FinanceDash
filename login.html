@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acesso Restrito - FinanceAI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --error: #e74c3c;
+            --white: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+        body {
+            background-color: var(--primary);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-box h2 { color: var(--primary); margin-bottom: 25px; font-size: 1.8rem; }
+        .login-box h2 span { color: var(--secondary); }
+
+        .input-group { position: relative; margin-bottom: 20px; text-align: left; }
+        .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #888; }
+        
+        .input-group input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .input-group input:focus { border-color: var(--secondary); box-shadow: 0 0 5px rgba(52, 152, 219, 0.3); }
+
+        #togglePassword { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #888; }
+
+        .btn-login {
+            width: 100%;
+            padding: 15px;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-login:hover { background: #2980b9; transform: translateY(-2px); }
+
+        .error-msg {
+            color: var(--error);
+            background: #fff0f0;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            margin-top: 20px;
+            display: none;
+            border: 1px solid rgba(231, 76, 60, 0.2);
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+
+        @media (max-width: 480px) { .login-box { padding: 30px 20px; } }
+    </style>
+</head>
+<body>
+
+    <div class="login-box">
+        <h2>Finance<span>AI</span></h2>
+        <form id="login-form">
+            <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input type="text" id="username" placeholder="Usuário" required autocomplete="username">
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="password" placeholder="Senha" required autocomplete="current-password">
+                <i class="fas fa-eye" id="togglePassword"></i>
+            </div>
+
+            <button type="submit" class="btn-login">ACESSAR SISTEMA</button>
+            <p id="error-msg" class="error-msg">Acesso negado. Verifique os dados.</p>
+        </form>
+    </div>
+
+    <script>
+        /**
+         * ANÁLISE TÉCNICA E DEPURAÇÃO:
+         * A senha "admin" foi convertida para SHA-256. 
+         * Mesmo que o código seja lido, o invasor não vê a senha real.
+         */
+        (function() {
+            // Hash SHA-256
+            const _0x5f2e = "0b3666155625bce361975e49d7c7b512e96145170fe6d51d24229c9ba58dc427";
+            const _0x1a2b = "admin"; // Usuário permitido
+
+            const loginForm = document.getElementById('login-form');
+            const togglePassword = document.querySelector('#togglePassword');
+            const passwordField = document.querySelector('#password');
+            const errorMsg = document.getElementById('error-msg');
+
+            // Mostrar/Esconder Senha
+            togglePassword.addEventListener('click', () => {
+                const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordField.setAttribute('type', type);
+                togglePassword.classList.toggle('fa-eye-slash');
+            });
+
+            // Validação com Hashing
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const u = document.getElementById('username').value;
+                const p = document.getElementById('password').value;
+
+                // Gera Hash da senha digitada para comparação
+                const ph = CryptoJS.SHA256(p).toString();
+
+                if (u === _0x1a2b && ph === _0x5f2e) {
+                    localStorage.setItem('isLogged', 'true');
+                    window.location.replace("index.html");
+                } else {
+                    errorMsg.style.display = 'block';
+                    loginForm.style.animation = 'shake 0.4s';
+                    passwordField.value = '';
+                    setTimeout(() => { loginForm.style.animation = ''; }, 400);
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

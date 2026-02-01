@@ -1,0 +1,70 @@
+:root {
+    --primary: #2c3e50;
+    --secondary: #3498db;
+    --accent: #e74c3c;
+    --bg-light: #f4f7f6;
+    --text: #333;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+body { background-color: var(--bg-light); color: var(--text); }
+
+.container { display: flex; min-height: 100vh; }
+
+/* Sidebar */
+.sidebar { width: 250px; background: var(--primary); color: white; padding: 20px; }
+.sidebar h2 span { color: var(--secondary); }
+.sidebar nav ul { list-style: none; margin-top: 30px; }
+.sidebar nav ul li { margin-bottom: 15px; }
+.sidebar nav ul li a { color: white; text-decoration: none; display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 5px; transition: 0.3s; }
+.sidebar nav ul li a:hover, .sidebar nav ul li a.active { background: var(--secondary); }
+
+/* Content */
+.content { flex: 1; padding: 40px; }
+header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+.summary .card { background: white; padding: 15px 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); font-weight: bold; font-size: 1.2rem; }
+
+/* Table */
+.table-container { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+table { width: 100%; border-collapse: collapse; text-align: left; }
+th, td { padding: 15px; border-bottom: 1px solid #eee; }
+th { background: #f8f9fa; text-transform: uppercase; font-size: 0.85rem; }
+.btn-edit { color: var(--secondary); cursor: pointer; border: none; background: none; }
+.btn-delete { color: var(--accent); cursor: pointer; border: none; background: none; }
+
+/* Modal */
+.modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; }
+.modal-content { background: white; padding: 30px; border-radius: 10px; width: 400px; }
+.modal-content input, .modal-content select { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; }
+.btn-save { background: #27ae60; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+.btn-close { background: #95a5a6; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px; }
+
+/* Filtros */
+.filters-section { background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+.filters-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.filters-grid input, .filters-grid select { padding: 8px; border: 1px solid #ddd; border-radius: 5px; outline: none; }
+.btn-clear { background: var(--accent); color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+
+/* --- Ajustes Responsivos --- */
+@media (max-width: 768px) {
+    .container { flex-direction: column; }
+    .sidebar { width: 100%; height: auto; padding: 10px; }
+    .sidebar nav ul { display: flex; overflow-x: auto; gap: 10px; margin-top: 10px; padding-bottom: 5px; }
+    .sidebar nav ul li { margin-bottom: 0; white-space: nowrap; }
+    .content { padding: 15px; }
+    header { flex-direction: column; align-items: flex-start; gap: 15px; }
+
+    #finance-table thead { display: none; }
+    #finance-table, #finance-table tbody, #finance-table tr, #finance-table td { display: block; width: 100%; }
+    #finance-table tr { margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; background: #fff; padding: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+    #finance-table td { text-align: right; padding-left: 50%; position: relative; border-bottom: 1px solid #eee; }
+    #finance-table td::before { content: attr(data-label); position: absolute; left: 10px; width: 45%; font-weight: bold; text-align: left; }
+    
+    .modal-content { width: 95%; }
+}
+
+/* Gráficos */
+.charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
+.card-chart { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); height: 400px; display: flex; flex-direction: column; }
+.canvas-container { flex-grow: 1; position: relative; height: 300px; width: 100%; }
