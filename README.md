@@ -1,0 +1,6 @@
+
+
+USUARIO ADMINISTRADOR
+
+USER: admin
+PASS: []
