@@ -1,6 +1,8 @@
 
 
-USUARIO ADMINISTRADOR
+#USUARIO ADMINISTRADOR
 
-USER: admin
-PASS: []
+##USER: 
+  admin
+##PASS:
+  admin
